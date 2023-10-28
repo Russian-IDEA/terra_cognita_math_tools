@@ -1,5 +1,5 @@
 from sat import Point
-from mathutils import distFromTo
+from main import distFromTo
 import math
 
 def getPrice(geoPoints, costMultiplier):
@@ -24,3 +24,9 @@ def getPrice(geoPoints, costMultiplier):
 
         s += math.sqrt(p * (p - a) * (p - b) * (p - c))
     return s * costMultiplier
+
+sus = [(55.094670, 37.897833),
+          (58.789068, 35.857587),
+          (59.093784, 46.832241),
+          (54.014399, 43.481651)]
+print(getPrice(sus, 1))
