@@ -7,7 +7,7 @@ from sat import *
 satArr = []
 satArr.append(Satellite(0,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
-                        '2 25544  0 0.4627 0000000 130.5360 325.0288 16',
+                        '2 25544  0 0.4627 0000000 130.5360 325.0288 5',
                         30))
 satArr.append(Satellite(1,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
@@ -23,7 +23,7 @@ satArr.append(Satellite(3,
                         30))
 satArr.append(Satellite(4,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
-                        '2 25544  17 35.4627 0000000 100 50.0288 10.2125391563537',
+                        '2 25544  17 35.4627 0000000 100 50.0288 7.2125391563537',
                         30))
 satArr.append(Satellite(5,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
@@ -31,7 +31,7 @@ satArr.append(Satellite(5,
                         30))
 satArr.append(Satellite(6,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
-                        '2 25544  19 78.4627 0000000 100 50.0288 10.2125391563537',
+                        '2 25544  19 78.4627 0000000 100 50.0288 8.2125391563537',
                         30))
 satArr.append(Satellite(7,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
@@ -39,7 +39,7 @@ satArr.append(Satellite(7,
                         30))
 satArr.append(Satellite(2,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
-                        '2 25544  95 3.4627 0000000 100 50.0288 10.2125391563537',
+                        '2 25544  95 3.4627 0000000 100 50.0288 6.2125391563537',
                         30))
 satArr.append(Satellite(8,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
@@ -67,12 +67,37 @@ satArr.append(Satellite(13,
                         30))
 satArr.append(Satellite(14,
                         '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
-                        '2 25544  65 63.4627 0000000 100 50.0288 10.2125391563537',
-                        30))
+                        '2 25544  83 63.4627 0000000 100 50.0288 6.2125391563537',
+                        45))
+satArr.append(Satellite(15,
+                        '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
+                        '2 25544  85 63.4627 0000000 100 50.0288 6.2125391563537',
+                        45))
+satArr.append(Satellite(16,
+                        '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
+                        '2 25544  88 63.4627 0000000 100 50.0288 6.2125391563537',
+                        45))
+satArr.append(Satellite(17,
+                        '1 25544U 98067A   23299.67161777  .00013592  00000-0  24854-3 0  9993',
+                        '2 25544  91 63.4627 0000000 100 50.0288 6.2125391563537',
+                        45))
 
 
 
-points = [Point(10.211426, -66.693956)]
+points = [Point(63.523651, 44.917995),
+          Point(69.818131, 117.456799),
+          Point(47.623047, 95.833511),
+          Point(47.545791, 57.831278)]
+
+# генерируем доп поинты, чтобы отсканить всю область.
+for i in range(4):
+    for j in range(i + 1, 4):
+        x = (points[i].x + points[j].x) / 2
+        y = (points[i].y + points[j].y) / 2
+        z = (points[i].z + points[j].z) / 2
+        P = Point(0, 0)
+        P.set_coord(x, y, z)
+        points.append(P)
 
 ax = plt.axes(projection='3d')
 
@@ -128,19 +153,22 @@ for id, sat in enumerate(satArr):
     # рисуем весь путь
     ax.plot3D(x, y, z)
 
-minTime = 1e20
+minTime = []
+for i in range(len(points)):
+    minTime.append(1e20)
 for id, sat in enumerate(dists):
-    for _, point, time in sat:
+    for ip, satData in enumerate(sat):
+        dist, point, time = satData
         if point != 0:
             ax.scatter(point.x, point.y, point.z)
             satellite = satArr[id]
-            print(id, satellite.maxDist, _, time)
-            minTime = min(minTime, time)
+            print(id, satellite.maxDist, dist, time)
+            minTime[ip] = min(minTime[ip], time)
 
-if(minTime == 1e20):
+if(max(minTime) == 1e20):
     print("Спутники не могут получить фото.")
 else:
-    print("Спутники получат фото через", minTime, "минут.")
+    print("Спутники получат фото через", max(minTime), "минут.")
 
 ax.set_aspect('equal')
 ax.set_adjustable('box')

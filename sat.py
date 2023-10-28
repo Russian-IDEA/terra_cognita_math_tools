@@ -26,6 +26,11 @@ class Point:
         self.y = R * math.cos(lati) * math.sin(long)
         self.z = R * math.sin(lati)
 
+    def set_coord(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
 class SatPoint:
     def __init__(self, x, y, z):
         self.x = x
