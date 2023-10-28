@@ -86,10 +86,23 @@ badZones = [
     (72.243807, -41.896169, 1200)
 ]
 
-points = [(75.961025, -44.030989),
-          (74.499765, -28.823938),
-          (70.253655, -39.218411),
-          (72.656555, -50.178049)]
+points = [(55.094670, 37.897833),
+          (58.789068, 35.857587),
+          (59.093784, 46.832241),
+          (54.014399, 43.481651)]
+
+ax = plt.axes(projection='3d')
+
+def distFromTo(x1, y1, z1, x2, y2, z2):
+    return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+
+
+def drawSphere(x0, y0, z0, radius, color):
+    u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
+    x = x0 + np.cos(u) * np.sin(v) * radius
+    y = y0 + np.sin(u) * np.sin(v) * radius
+    z = z0 + np.cos(v) * radius
+    ax.plot_surface(x, y, z, color=color, alpha=0.3)
 
 def checkBadPoints(geoPoints, geoBadZones):
     points = []
@@ -105,6 +118,10 @@ def checkBadPoints(geoPoints, geoBadZones):
             if (badZone.isInside(point)):
                 return -1
 
+    # draw bad zones
+    for badZone in badZones:
+        drawSphere(badZone.x, badZone.y, badZone.z, badZone.radius, 'r')
+
     calculate_time(points)
 
 def calculate_time(points):
@@ -118,28 +135,12 @@ def calculate_time(points):
             P.set_coord(x, y, z)
             points.append(P)
 
-    ax = plt.axes(projection='3d')
-
-    def distFromTo(x1, y1, z1, x2, y2, z2):
-        return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
-
-    def drawSphere(x0, y0, z0, radius, color):
-        u, v = np.mgrid[0:2 * np.pi:20j, 0:np.pi:10j]
-        x = x0 + np.cos(u) * np.sin(v) * radius
-        y = y0 + np.sin(u) * np.sin(v) * radius
-        z = z0 + np.cos(v) * radius
-        ax.plot_surface(x, y, z, color=color, alpha=0.3)
-
     # draw points
     for point in points:
         ax.scatter(point.x, point.y, point.z)
 
     # draw Earth
     drawSphere(0, 0, 0, R, "b")
-
-    # draw bad zones
-    for badZone in badZones:
-        drawSphere(badZone.x, badZone.y, badZone.z, badZone.radius, 'r')
 
     # orbits
     # список дистанций от спутников до точек в формате
@@ -198,4 +199,4 @@ def calculate_time(points):
     ax.set_adjustable('box')
     plt.show()
 
-checkBadPoints(points, badZones)
+print(checkBadPoints(points, badZones))
