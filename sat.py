@@ -36,3 +36,15 @@ class SatPoint:
         self.x = x
         self.y = y
         self.z = z
+
+class BadZone:
+    def __init__(self, lati, long, radius):
+        lati = math.radians(lati)
+        long = math.radians(long)
+        self.x = R * math.cos(lati) * math.cos(long)
+        self.y = R * math.cos(lati) * math.sin(long)
+        self.z = R * math.sin(lati)
+        self.radius = radius
+
+    def isInside(self, point):
+        return (self.x - point.x) ** 2 + (self.y - point.y) ** 2 + (self.z - point.z) <= self.radius ** 2
