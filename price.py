@@ -1,5 +1,5 @@
 from sat import Point
-from main import distFromTo
+from oldAdminTool import distFromTo
 import math
 
 def getPrice(geoPoints, costMultiplier):

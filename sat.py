@@ -1,8 +1,6 @@
 import math
+from consts import *
 
-R = 6370
-g = 9.81
-GM4pi2 = 1.009e13
 class Satellite:
     def __init__(self, id, s, t, angle):
         self.id = id
